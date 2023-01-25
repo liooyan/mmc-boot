@@ -24,6 +24,8 @@
         <mmc.version>${revision}</mmc.version>
         <hadoop.version>3.3.1</hadoop.version>
         <knife4j.version>3.0.3</knife4j.version>
+        <xxl-job.version>2.3.1</xxl-job.version>
+
     </properties>
 
     <name>MMC Boot Dependencies</name>
@@ -114,6 +116,13 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
+            </dependency>
+
+            <!-- xxl-job-core -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl-job.version}</version>
             </dependency>
 
 
