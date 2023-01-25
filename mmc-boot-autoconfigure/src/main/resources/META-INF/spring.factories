@@ -1,0 +1,19 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.lioyan.autoconfigure.web.MvcConfig,\
+  cn.lioyan.autoconfigure.config.FileInit,\
+  cn.lioyan.autoconfigure.data.es.RequestSearchHitsAdvice,\
+  cn.lioyan.autoconfigure.record.DurationLogConfig,\
+  cn.lioyan.autoconfigure.data.mybaits.Config,\
+  cn.lioyan.autoconfigure.web.swagger.SwaggerAutoConfiguration,\
+  cn.lioyan.autoconfigure.web.request.WebRequestParamCompoundTypeConfig,\
+  cn.lioyan.autoconfigure.queue.spring.SpringQueueInit,\
+  cn.lioyan.autoconfigure.data.mybaits.MultipleDataSourceAutoConfiguration
+
+
+org.springframework.context.ApplicationListener=\
+  cn.lioyan.autoconfigure.web.SECApplicationListener
+
+
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  cn.lioyan.autoconfigure.config.SecEnvironmentPostProcessor
+

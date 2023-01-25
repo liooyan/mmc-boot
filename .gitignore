@@ -1,0 +1,11 @@
+.flattened-pom.xml
+.idea
+
+./*/.flattened-pom.xml
+./*/.idea
+
+./target
+./*/target
+
+./*.iml
+./*/*.iml

@@ -6,13 +6,33 @@
 
     <groupId>cn.lioyan</groupId>
     <artifactId>mmc-boot</artifactId>
-    <version>0.0.1</version>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>mmc-boot-dependencies</module>
+        <module>mmc-boot-parent</module>
+        <module>mmc-boot-core</module>
+        <module>mmc-boot-autoconfigure</module>
+        <module>mmc-spring-boot-starter</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <revision>0.0.3-SNAPSHOT</revision>
+        <mmc.url>https://github.com/liooyan/mmc-boot</mmc.url>
+        <developers.name>lioyan</developers.name>
+        <developers.email>lioyan0009338@163.com</developers.email>
+        <scm.tag>master</scm.tag>
+        <scm.url>https://github.com/liooyan/mmc-boot</scm.url>
+        <scm.connection>https://github.com/liooyan/mmc-boot.git</scm.connection>
     </properties>
+
+    <name>MMC Boot</name>
+    <description>MMC Boot Dependencies</description>
+    <url>${mmc.url}</url>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -22,19 +42,18 @@
     </licenses>
     <developers>
         <developer>
-            <name>lioyan</name>
-            <email>1064012668@qq.com</email>
+            <name>${developers.name}</name>
+            <email>${developers.email}</email>
         </developer>
     </developers>
     <scm>
-        <tag>master</tag>
-        <url>https://github.com/liooyan/mmc-boot</url>
-        <connection>https://github.com/liooyan/mmc-boot.git</connection>
-        <developerConnection>https://github.com/liooyan/mmc-boot.git</developerConnection>
+        <tag>${scm.tag}</tag>
+        <url>${scm.url}</url>
+        <connection>${scm.connection}</connection>
+        <developerConnection>${scm.connection}</developerConnection>
     </scm>
-    <name>MMC Boot</name>
-    <url>https://github.com/liooyan/mmc-boot</url>
-    <description>MMC Boot Dependencies</description>
+
+
     <distributionManagement>
         <!--  申明打包到Maven公有仓库  -->
         <snapshotRepository>
@@ -43,8 +62,14 @@
         </snapshotRepository>
     </distributionManagement>
 
+
+
+
+
+
     <build>
         <plugins>
+<!--            用于上传maven 中央库-->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -56,6 +81,7 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+<!--         用于打包源码   -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -69,6 +95,7 @@
                     </execution>
                 </executions>
             </plugin>
+<!--            用于打包javadoc文档-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -85,6 +112,7 @@
                     </execution>
                 </executions>
             </plugin>
+<!--            用于gpg加密-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -99,6 +127,33 @@
                     </execution>
                 </executions>
             </plugin>
+<!--用于占位符-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
     </build>
 </project>
