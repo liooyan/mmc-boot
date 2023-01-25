@@ -13,6 +13,7 @@ import cn.lioyan.autoconfigure.web.response.FileInfoResponseBodyReturnValueHandl
 import cn.lioyan.autoconfigure.web.response.RestRespResponse;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;

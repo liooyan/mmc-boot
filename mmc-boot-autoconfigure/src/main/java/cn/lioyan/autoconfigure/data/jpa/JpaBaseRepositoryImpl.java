@@ -16,6 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

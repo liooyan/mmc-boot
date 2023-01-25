@@ -15,6 +15,7 @@ public interface ExceptionKeys {
 
 
     int DIR_FILES_ERROR = 410001;
+    int UPDATE_DATA_MISS_ERROR = 410002;
 
 
 }
