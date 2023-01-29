@@ -20,7 +20,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 @ConditionalOnClass({DispatcherServlet.class, Knife4jAutoConfiguration.class})
 @ConditionalOnProperty(prefix = "swagger", name = {"enable"}, havingValue = "true")
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableSwagger2
+@EnableSwagger2WebMvc
 @EnableKnife4j
 public class SwaggerAutoConfiguration {
 

@@ -1,8 +1,11 @@
 package cn.lioyan.autoconfigure.data.mybaits;
 
 import cn.lioyan.core.util.NullUtil;
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import cn.lioyan.autoconfigure.config.ConfigProperties;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -84,10 +87,10 @@ public class MultipleDataSourceAutoConfiguration {
                         .setRole(BeanDefinition.ROLE_INFRASTRUCTURE).setSynthetic(true).getBeanDefinition());
                 SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
                 factoryBean.setVfs(SpringBootVFS.class);
-                MybatisConfigurationS conf = new MybatisConfigurationS();
+                MultimoduleMybatisConfiguration conf = new MultimoduleMybatisConfiguration();
 
                 conf.setMapUnderscoreToCamelCase(true);
-                conf.addInterceptor(new Config().mybatisPlusInterceptor());
+                conf.addInterceptor(mybatisPlusInterceptor(scheme));
                 conf.setJdbcType(scheme);
                 registry.registerBeanDefinition(sqlSessionFactoryName,
                         loadMapper(pathResolver, dsName,scheme)
@@ -98,6 +101,20 @@ public class MultipleDataSourceAutoConfiguration {
 
             }
         }
+
+        public MybatisPlusInterceptor mybatisPlusInterceptor(  String scheme) {
+            DbType dbType ;
+           if(scheme == null){
+               dbType = DbType.MYSQL;
+           }else {
+               dbType = DbType.getDbType(scheme);
+           }
+
+            MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+            interceptor.addInnerInterceptor(new PaginationInnerInterceptor(dbType));
+            return interceptor;
+        }
+
 
         private BeanDefinitionBuilder loadMapper(ResourcePatternResolver pathResolver, String dsName,String schema) {
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(SqlSessionFactoryBean.class)

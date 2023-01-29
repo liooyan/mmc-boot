@@ -1,6 +1,8 @@
 package cn.lioyan.core.exception;
 
 
+import cn.lioyan.core.util.PropertiesUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -17,6 +19,7 @@ public abstract class ErrorMsg {
 
     static {
         errMsgProp = new ArrayList<>(4);
+        errMsgProp.add(PropertiesUtils.loadProperties("error-msg.properties"));
     }
 
     public static String getErrorMsg(Integer code){

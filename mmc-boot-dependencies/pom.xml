@@ -17,7 +17,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>2.7.8</spring-boot.version>
+        <spring-boot.version>2.5.7</spring-boot.version>
         <spring-cloud.version>2020.0.5</spring-cloud.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
@@ -25,6 +25,8 @@
         <hadoop.version>3.3.1</hadoop.version>
         <knife4j.version>3.0.3</knife4j.version>
         <xxl-job.version>2.3.1</xxl-job.version>
+        <h2.version>2.0.206</h2.version>
+        <mysql.version>8.0.32</mysql.version>
 
     </properties>
 
@@ -103,6 +105,29 @@
                 <groupId>cn.lioyan</groupId>
                 <artifactId>mmc-boot-autoconfigure</artifactId>
                 <version>${mmc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.lioyan</groupId>
+                <artifactId>mmc-spring-boot-starter</artifactId>
+                <version>${mmc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.lioyan</groupId>
+                <artifactId>mmc-boot-quart</artifactId>
+                <version>${mmc.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
 
 

@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * {@link MybatisConfigurationS}
+ * {@link MultimoduleMybatisConfiguration}
  *
  * @author com.lioyan
  * @since 2022/1/2 22:21
  */
-public class MybatisConfigurationS extends MybatisConfiguration {
+public class MultimoduleMybatisConfiguration extends MybatisConfiguration {
 
 
 private  String jdbcType;
