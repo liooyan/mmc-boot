@@ -1,5 +1,6 @@
 package cn.lioyan.autoconfigure.data.mybaits;
 
+import cn.lioyan.autoconfigure.data.SqlInit;
 import cn.lioyan.core.util.NullUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
@@ -98,6 +99,8 @@ public class MultipleDataSourceAutoConfiguration {
                                 .addPropertyValue("typeAliasesPackage", basePackage + ".bean" + dsName)
                                 .addPropertyValue("typeHandlersPackage", basePackage + ".dao.handler" + dsName)
                                 .addPropertyValue("configuration", conf).getBeanDefinition());
+
+                SqlInit.determineDataSource(dataSourceName,environment,registry,"spring.datasource." + dsName);
 
             }
         }
