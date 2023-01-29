@@ -21,7 +21,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>0.0.3-SNAPSHOT</revision>
+        <revision>0.0.4-SNAPSHOT</revision>
         <mmc.url>https://github.com/liooyan/mmc-boot</mmc.url>
         <developers.name>lioyan</developers.name>
         <developers.email>lioyan0009338@163.com</developers.email>
