@@ -8,9 +8,6 @@ package cn.lioyan.autoconfigure.queue;
  */
 public interface QueueFactory {
 
-    /**
-     * 发送一条数据
-     */
     <T> QueueSend<T> getQueueSend(String topic);
 
 

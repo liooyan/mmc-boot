@@ -9,7 +9,10 @@ package cn.lioyan.autoconfigure.queue;
 public interface QueueRegistered {
 
     /**
-     * 发送一条数据
+     * 获取队列发送器
+     * @param topic 队列名称
+     * @return 队列发送器
+     * @param <T> 泛型
      */
     <T> QueueSend<T> getQueueSend(String topic);
 

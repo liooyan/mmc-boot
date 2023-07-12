@@ -1,17 +1,43 @@
 package cn.lioyan.autoconfigure.config.scope;
 
+import cn.lioyan.autoconfigure.util.SpringPropertyUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.support.StandardServletEnvironment;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 public class NamingScopeContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
 
-
+public static final String SOURCE_NAME = "source_name";
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        ApplicationContext applicationContext = event.getApplicationContext();
+        String[] scopeFactoryBeanNames = applicationContext.getBeanNamesForType(ScopeFactory.class);
+
+        for (String scopeFactoryBeanName : scopeFactoryBeanNames)
+        {
+            ScopeFactory scopeFactory = applicationContext.getBean(scopeFactoryBeanName, ScopeFactory.class);
+            String configBasePath = scopeFactory.getConfigBasePath();
+            List<String> scopes = SpringPropertyUtil.getPropertyInAllSource(applicationContext.getEnvironment(), configBasePath + "." + SOURCE_NAME);
+            for (String scope : scopes)
+            {
+                System.out.println(scope);
+            }
+
+        }
+
         BeanDefinitionRegistry registry = getBeanDefinitionRegistry(event);
         String[] beanNames = registry.getBeanDefinitionNames();
 
@@ -42,4 +68,10 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
             return (BeanDefinitionRegistry) event.getApplicationContext().getAutowireCapableBeanFactory();
         }
     }
+
+
+
+
+
+
 }

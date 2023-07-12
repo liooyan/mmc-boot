@@ -64,8 +64,8 @@ public class FileInfo {
     /**
      * 获取输入流
      *
-     * @return
-     * @throws IOException
+     * @return 输入流
+     * @throws IOException 异常
      */
     public InputStream getInputStream() throws IOException {
         return fileSystem.getInputStream(this.path);
@@ -76,8 +76,8 @@ public class FileInfo {
     /**
      * 获取输入流
      *
-     * @return
-     * @throws IOException
+     * @return 输出流
+     * @throws IOException 异常
      */
     public OutputStream getOutputStream() throws IOException {
         return fileSystem.getOutputStream(this.path);
