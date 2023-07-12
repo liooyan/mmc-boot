@@ -9,12 +9,12 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   cn.lioyan.autoconfigure.queue.spring.SpringQueueInit,\
   cn.lioyan.autoconfigure.data.mybaits.MultipleDataSourceAutoConfiguration,\
   cn.lioyan.autoconfigure.config.scope.NameReference,\
-  cn.lioyan.autoconfigure.config.scope.NamingScopeBeanRegistry
+  cn.lioyan.autoconfigure.config.scope.NamingScopeBeanRegistry,\
+  cn.lioyan.autoconfigure.config.scope.NamingScopeBeanBeanPostProcessor
 
 
 org.springframework.context.ApplicationListener=\
-  cn.lioyan.autoconfigure.web.SECApplicationListener,\
-  cn.lioyan.autoconfigure.config.scope.NamingScopeContextRefreshedListener
+  cn.lioyan.autoconfigure.web.SECApplicationListener
 
 
 org.springframework.boot.env.EnvironmentPostProcessor=\
