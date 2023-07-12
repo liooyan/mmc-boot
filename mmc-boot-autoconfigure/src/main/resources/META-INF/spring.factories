@@ -7,7 +7,9 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   cn.lioyan.autoconfigure.web.swagger.SwaggerAutoConfiguration,\
   cn.lioyan.autoconfigure.web.request.WebRequestParamCompoundTypeConfig,\
   cn.lioyan.autoconfigure.queue.spring.SpringQueueInit,\
-  cn.lioyan.autoconfigure.data.mybaits.MultipleDataSourceAutoConfiguration
+  cn.lioyan.autoconfigure.data.mybaits.MultipleDataSourceAutoConfiguration,\
+  cn.lioyan.autoconfigure.config.scope.NameReference,\
+  cn.lioyan.autoconfigure.config.scope.NamingScopeBeanRegistry
 
 
 org.springframework.context.ApplicationListener=\

@@ -9,6 +9,7 @@ public interface ScopeFactory<T, Config extends ScopeConfig> {
     String getConfigBasePath();
 
     Class<? extends ScopeConfig> getConfigClass();
+    Class<T> getBeanClass();
 
     T getBean(Config config);
 
