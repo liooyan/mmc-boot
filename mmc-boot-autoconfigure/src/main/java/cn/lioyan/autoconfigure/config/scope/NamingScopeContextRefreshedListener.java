@@ -57,7 +57,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
         for (ScopeFactory scopeFactory : springFactoriesInstances) {
             String configBasePath = scopeFactory.getConfigBasePath();
             List<String> scopes = SpringPropertyUtil.getPropertyInAllSource(applicationContext.getEnvironment(), configBasePath + "." + SOURCE_NAME);
-            Class<? extends ScopeConfig> configClass = scopeFactory.getConfigClass();
+            Class configClass = scopeFactory.getConfigClass();
 
             //加载别名
             for (String scope : scopes) {
@@ -69,7 +69,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
 
             // 加载配置
             for (String groundName : aliasGroundName) {
-                ScopeConfig scopeConfig;
+                Object scopeConfig;
                 try {
                     scopeConfig = Binder.get(environment).bind(configBasePath + "." + groundName, Bindable.of(configClass)).get();
                     Object scopeBean = scopeFactory.getBean(scopeConfig);
@@ -105,7 +105,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
             Object beanDef = namingScopeBeanRegistry.getBeanDef(scopeFactory.getBeanClass());
             try {
                 if (beanDef == null) {
-                    ScopeConfig scopeConfig = Binder.get(environment).bind(configBasePath, Bindable.of(configClass)).get();
+                    Object scopeConfig = Binder.get(environment).bind(configBasePath, Bindable.of(configClass)).get();
                     beanDef = scopeFactory.getBean(scopeConfig);
                     if (registry != null) {
                         scopeFactory.registryBeanDefinition(scopeConfig, registry);

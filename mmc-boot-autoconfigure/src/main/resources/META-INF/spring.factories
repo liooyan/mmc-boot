@@ -20,3 +20,7 @@ org.springframework.context.ApplicationListener=\
 org.springframework.boot.env.EnvironmentPostProcessor=\
   cn.lioyan.autoconfigure.config.SecEnvironmentPostProcessor
 
+
+cn.lioyan.autoconfigure.config.scope.ScopeFactory=\
+  cn.lioyan.autoconfigure.data.DataSoureScopeFactory
+

@@ -5,12 +5,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 /**
  * 用于需要区域范围的工程类
  */
-public interface ScopeFactory<T, Config extends ScopeConfig> {
+public interface ScopeFactory<T, Config> {
 
 
     String getConfigBasePath();
 
-    Class<? extends ScopeConfig> getConfigClass();
+    Class<Config> getConfigClass();
     Class<T> getBeanClass();
 
     T getBean(Config config);
