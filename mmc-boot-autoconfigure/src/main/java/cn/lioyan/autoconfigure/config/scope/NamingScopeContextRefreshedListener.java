@@ -4,11 +4,13 @@ import cn.lioyan.autoconfigure.util.SpringPropertyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.SpringFactoriesLoader;
@@ -26,16 +28,29 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
     public static final String ALIAS_KEY = "alias";
 
 
-    public static final NameReference nameReference = new NameReference();
-    public static final NamingScopeBeanRegistry namingScopeBeanRegistry = new NamingScopeBeanRegistry();
-    private ApplicationContext applicationContext;
+    public static NameReference nameReference = null;
+    public static NamingScopeBeanRegistry namingScopeBeanRegistry = null;
+    private ConfigurableApplicationContext applicationContext;
+
+    private void init() {
+        ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
+        nameReference = new NameReference();
+        namingScopeBeanRegistry = new NamingScopeBeanRegistry();
+        beanFactory.registerSingleton(NameReference.class.getName(), nameReference);
+        beanFactory.registerSingleton(NamingScopeBeanRegistry.class.getName(), namingScopeBeanRegistry);
+
+    }
 
     @Override
     public void onApplicationEvent(ApplicationPreparedEvent event) {
         applicationContext = event.getApplicationContext();
-
+        init();
+        BeanDefinitionRegistry registry = null;
+        ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
+        if (beanFactory instanceof BeanDefinitionRegistry) {
+            registry = (BeanDefinitionRegistry) beanFactory;
+        }
         Environment environment = applicationContext.getEnvironment();
-
         List<String> scopeFactoryNames = SpringFactoriesLoader.loadFactoryNames(ScopeFactory.class, applicationContext.getClassLoader());
         List<ScopeFactory> springFactoriesInstances = createSpringFactoriesInstances(applicationContext.getClassLoader(), new HashSet<>(scopeFactoryNames));
 
@@ -58,7 +73,12 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
                 try {
                     scopeConfig = Binder.get(environment).bind(configBasePath + "." + groundName, Bindable.of(configClass)).get();
                     Object scopeBean = scopeFactory.getBean(scopeConfig);
-                    namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), groundName, scopeBean);
+                    if (registry != null) {
+                        scopeFactory.registryBeanDefinition(scopeConfig, registry);
+                    }
+                    if (scopeBean != null) {
+                        namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), groundName, scopeBean);
+                    }
                 } catch (NoSuchElementException e) {
                     //没有配置,获取默认配置
                     try {
@@ -66,10 +86,15 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
                         if (beanDef == null) {
                             scopeConfig = Binder.get(environment).bind(configBasePath, Bindable.of(configClass)).get();
                             beanDef = scopeFactory.getBean(scopeConfig);
-                            namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), null, beanDef);
+                            if (registry != null) {
+                                scopeFactory.registryBeanDefinition(scopeConfig, registry);
+                            }
+                            if (beanDef != null) {
+                                namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), null, beanDef);
+                                //同时也注册到groundName中
+                                namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), groundName, beanDef);
+                            }
                         }
-                        //同时也注册到groundName中
-                        namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), groundName, beanDef);
                     } catch (NoSuchElementException exception) {
                         continue;
                     }
@@ -82,7 +107,12 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
                 if (beanDef == null) {
                     ScopeConfig scopeConfig = Binder.get(environment).bind(configBasePath, Bindable.of(configClass)).get();
                     beanDef = scopeFactory.getBean(scopeConfig);
-                    namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), null, beanDef);
+                    if (registry != null) {
+                        scopeFactory.registryBeanDefinition(scopeConfig, registry);
+                    }
+                    if (beanDef != null) {
+                        namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), null, beanDef);
+                    }
                 }
             } catch (NoSuchElementException exception) {
                 continue;
@@ -93,8 +123,8 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
     }
 
 
-    private  List<ScopeFactory> createSpringFactoriesInstances(
-                                                       ClassLoader classLoader, Set<String> names) {
+    private List<ScopeFactory> createSpringFactoriesInstances(
+            ClassLoader classLoader, Set<String> names) {
         List<ScopeFactory> instances = new ArrayList<>(names.size());
         for (String name : names) {
             try {
@@ -102,8 +132,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
                 Constructor<?> constructor = instanceClass.getDeclaredConstructor(null);
                 ScopeFactory instance = (ScopeFactory) BeanUtils.instantiateClass(constructor, new Object[0]);
                 instances.add(instance);
-            }
-            catch (Throwable ex) {
+            } catch (Throwable ex) {
                 throw new IllegalArgumentException("Cannot instantiate ScopeFactory : " + name, ex);
             }
         }
