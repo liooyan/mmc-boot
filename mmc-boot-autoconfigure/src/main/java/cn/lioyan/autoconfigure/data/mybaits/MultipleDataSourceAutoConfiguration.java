@@ -59,6 +59,7 @@ public class MultipleDataSourceAutoConfiguration {
         private ResourceLoader resourceLoader;
         private Environment environment;
 
+
         @Override
         public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
            List<String> dbs = getDbs();

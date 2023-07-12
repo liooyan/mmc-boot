@@ -19,14 +19,10 @@ public class NamingScopeBeanBeanPostProcessor implements BeanPostProcessor, Appl
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        this.nameReference =applicationContext.getBean(NameReference.class);
-        this.namingScopeBeanRegistry = applicationContext.getBean(NamingScopeBeanRegistry.class);
-        init(applicationContext);
+        this.nameReference =NamingScopeContextRefreshedListener.nameReference;
+        this.namingScopeBeanRegistry = NamingScopeContextRefreshedListener.namingScopeBeanRegistry;
     }
 
-    private void init(ApplicationContext applicationContext){
-      new NamingScopeLoading(applicationContext).run();
-    }
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {

@@ -1,44 +1,45 @@
 package cn.lioyan.autoconfigure.config.scope;
 
 import cn.lioyan.autoconfigure.util.SpringPropertyUtil;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.lang.reflect.Constructor;
+import java.util.*;
 
 
-public class NamingScopeLoading {
+public class NamingScopeContextRefreshedListener implements ApplicationListener<ApplicationPreparedEvent> {
 
 
     public static final String SOURCE_NAME = "source_name";
     public static final String ALIAS_KEY = "alias";
 
 
-    private NameReference nameReference;
-    private NamingScopeBeanRegistry namingScopeBeanRegistry;
-    private final ApplicationContext applicationContext;
+    public static final NameReference nameReference = new NameReference();
+    public static final NamingScopeBeanRegistry namingScopeBeanRegistry = new NamingScopeBeanRegistry();
+    private ApplicationContext applicationContext;
 
-    public NamingScopeLoading(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+    @Override
+    public void onApplicationEvent(ApplicationPreparedEvent event) {
+        applicationContext = event.getApplicationContext();
 
-
-    private void init() {
-        nameReference = applicationContext.getBean(NameReference.class);
-        namingScopeBeanRegistry = applicationContext.getBean(NamingScopeBeanRegistry.class);
-    }
-
-
-    public void run()  {
-        init();
         Environment environment = applicationContext.getEnvironment();
-        String[] scopeFactoryBeanNames = applicationContext.getBeanNamesForType(ScopeFactory.class);
 
-        for (String scopeFactoryBeanName : scopeFactoryBeanNames) {
-            ScopeFactory scopeFactory = applicationContext.getBean(scopeFactoryBeanName, ScopeFactory.class);
+        List<String> scopeFactoryNames = SpringFactoriesLoader.loadFactoryNames(ScopeFactory.class, applicationContext.getClassLoader());
+        List<ScopeFactory> springFactoriesInstances = createSpringFactoriesInstances(applicationContext.getClassLoader(), new HashSet<>(scopeFactoryNames));
+
+        for (ScopeFactory scopeFactory : springFactoriesInstances) {
             String configBasePath = scopeFactory.getConfigBasePath();
             List<String> scopes = SpringPropertyUtil.getPropertyInAllSource(applicationContext.getEnvironment(), configBasePath + "." + SOURCE_NAME);
             Class<? extends ScopeConfig> configClass = scopeFactory.getConfigClass();
@@ -89,24 +90,24 @@ public class NamingScopeLoading {
 
         }
 
-//        BeanDefinitionRegistry registry = getBeanDefinitionRegistry(event);
-//        String[] beanNames = registry.getBeanDefinitionNames();
-//
-//        for (String beanName : beanNames) {
-//            BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
-//            String beanClassName = beanDefinition.getBeanClassName();
-//            if (beanClassName != null) {
-//                // 使用AnnotationUtils.findAnnotation方法获取指定注解的信息
-//                ModuleImport annotation = AnnotationUtils.findAnnotation(ClassUtils.resolveClassName(beanClassName, null), ModuleImport.class);
-//
-//                // 如果Bean定义中带有指定注解，则进行处理
-//                if (annotation != null) {
-//                    System.out.println("Found bean with @MyAnnotation: " + beanName);
-//                    // 在这里处理带有@MyAnnotation注解的Bean定义，执行你想要的操作
-//                    // ...
-//                }
-//            }
-//        }
+    }
+
+
+    private  List<ScopeFactory> createSpringFactoriesInstances(
+                                                       ClassLoader classLoader, Set<String> names) {
+        List<ScopeFactory> instances = new ArrayList<>(names.size());
+        for (String name : names) {
+            try {
+                Class<?> instanceClass = ClassUtils.forName(name, classLoader);
+                Constructor<?> constructor = instanceClass.getDeclaredConstructor(null);
+                ScopeFactory instance = (ScopeFactory) BeanUtils.instantiateClass(constructor, new Object[0]);
+                instances.add(instance);
+            }
+            catch (Throwable ex) {
+                throw new IllegalArgumentException("Cannot instantiate ScopeFactory : " + name, ex);
+            }
+        }
+        return instances;
     }
 
 //    private BeanDefinitionRegistry getBeanDefinitionRegistry() {
