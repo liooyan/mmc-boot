@@ -18,7 +18,7 @@ import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
-
+//FeignContext
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class NamingScopeContextRefreshedListener implements ApplicationListener<ApplicationPreparedEvent> {
