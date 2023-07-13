@@ -2,19 +2,15 @@ package cn.lioyan.autoconfigure.config.scope;
 
 import cn.lioyan.autoconfigure.util.SpringPropertyUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Constructor;
@@ -59,7 +55,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
             //加载别名
             for (String scope : scopes) {
                 String alias = environment.getProperty(configBasePath + "." + scope + "." + ALIAS_KEY, String.class, scope);
-                namingScopeBeanRegistry.addAlias(beanClass,scope, alias);
+                namingScopeBeanRegistry.addAlias(beanClass, scope, alias);
             }
             String[] aliasGroundName = namingScopeBeanRegistry.getAliasGroundName(beanClass);
 

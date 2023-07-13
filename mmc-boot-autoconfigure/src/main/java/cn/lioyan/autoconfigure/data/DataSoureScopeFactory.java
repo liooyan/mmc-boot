@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 public class DataSoureScopeFactory implements ScopeFactory<DataSource, DataSourceProperties> {
     @Override
     public String getConfigBasePath() {
-        return "datasource";
+        return "spring.datasource";
     }
 
     @Override
