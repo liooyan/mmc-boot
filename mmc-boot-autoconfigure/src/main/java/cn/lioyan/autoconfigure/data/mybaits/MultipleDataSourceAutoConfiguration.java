@@ -70,8 +70,12 @@ public class MultipleDataSourceAutoConfiguration {
 
         @Override
         public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-            NamingScopeBeanRegistry namingScopeBeanRegistry = beanFactory.getBean(NamingScopeBeanRegistry.class);
-
+            NamingScopeBeanRegistry namingScopeBeanRegistry = null;
+            try {
+                namingScopeBeanRegistry = beanFactory.getBean(NamingScopeBeanRegistry.class);
+            } catch (Exception e) {
+                return;
+            }
             List<String> dbs = getDbs();
             ResourcePatternResolver pathResolver = new PathMatchingResourcePatternResolver();
             for (String dsName : dbs) {
@@ -79,10 +83,11 @@ public class MultipleDataSourceAutoConfiguration {
             }
 
             //默认连接
-           initMybaits(null,pathResolver,registry,namingScopeBeanRegistry);
+            initMybaits(null, pathResolver, registry, namingScopeBeanRegistry);
 
 
         }
+
         private Set<String> daoPackages = new HashSet<>();
 
         private void initMybaits(String dsName, ResourcePatternResolver pathResolver, BeanDefinitionRegistry registry, NamingScopeBeanRegistry namingScopeBeanRegistry) {
@@ -90,7 +95,7 @@ public class MultipleDataSourceAutoConfiguration {
             String basePath = dsName == null ? MULTIPLY_DATASOURCE_PREFIX : MULTIPLY_DATASOURCE_PREFIX + "." + dsName;
             MultipleMybaitsProperties multipleMybaitsProperties = null;
             if (dsName == null) {
-                if(!daoPackages.add(basePath)){
+                if (!daoPackages.add(basePath)) {
                     return;
                 }
                 dsName = "";

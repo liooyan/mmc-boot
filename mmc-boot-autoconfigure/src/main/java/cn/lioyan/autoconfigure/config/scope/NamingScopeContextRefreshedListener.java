@@ -7,8 +7,11 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.ClassUtils;
@@ -17,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class NamingScopeContextRefreshedListener implements ApplicationListener<ApplicationPreparedEvent> {
 
 
@@ -34,9 +38,13 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
 
     }
 
+
     @Override
     public void onApplicationEvent(ApplicationPreparedEvent event) {
         applicationContext = event.getApplicationContext();
+        if (namingScopeBeanRegistry != null) {
+            return;
+        }
         init();
         BeanDefinitionRegistry registry = null;
         ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();

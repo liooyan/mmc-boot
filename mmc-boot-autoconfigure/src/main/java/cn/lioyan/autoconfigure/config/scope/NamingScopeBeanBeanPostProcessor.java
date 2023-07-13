@@ -18,12 +18,19 @@ public class NamingScopeBeanBeanPostProcessor implements BeanPostProcessor, Appl
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        this.namingScopeBeanRegistry = applicationContext.getBean(NamingScopeBeanRegistry.class);
+      try {
+          this.namingScopeBeanRegistry = applicationContext.getBean(NamingScopeBeanRegistry.class);
+      }catch (Exception e){
+
+      }
     }
 
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (namingScopeBeanRegistry == null) {
+            return bean;
+        }
         Class<?> clazz = bean.getClass();
 
         for (Field field : clazz.getDeclaredFields()) {
