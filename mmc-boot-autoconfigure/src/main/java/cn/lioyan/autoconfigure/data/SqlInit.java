@@ -23,11 +23,16 @@ public class SqlInit {
 
 
 
-    public static void determineDataSource( String dataSourceName, Environment environment, BeanDefinitionRegistry registry,String basePath) {
-        SqlInitializationProperties sqlInitializationProperties = Binder.get(environment).bind(basePath + ".sql.init", Bindable.of(SqlInitializationProperties.class)).get();
+    public static void determineDataSource( DataSource dataSource, Environment environment, BeanDefinitionRegistry registry,String basePath) {
+        SqlInitializationProperties sqlInitializationProperties;
+        try {
+             sqlInitializationProperties = Binder.get(environment).bind(basePath + ".sql.init", Bindable.of(SqlInitializationProperties.class)).get();
+        }catch (Exception e){
+            return;
+        }
         AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(SqlDataSourceScriptDatabaseInitializer.class)
                 .setRole(BeanDefinition.ROLE_INFRASTRUCTURE)
-                .addConstructorArgReference(dataSourceName)
+                .addConstructorArgValue(dataSource)
                 .addConstructorArgValue(sqlInitializationProperties)
                 .getBeanDefinition();
         registry.registerBeanDefinition(basePath+".SqlDataSourceScriptDatabaseInitializer",beanDefinition);
