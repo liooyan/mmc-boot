@@ -22,5 +22,6 @@ org.springframework.boot.env.EnvironmentPostProcessor=\
 
 
 cn.lioyan.autoconfigure.config.scope.ScopeFactory=\
-  cn.lioyan.autoconfigure.data.DataSoureScopeFactory
+  cn.lioyan.autoconfigure.data.DataSoureScopeFactory,\
+  cn.lioyan.autoconfigure.data.redis.RedisScopeFactory
 
