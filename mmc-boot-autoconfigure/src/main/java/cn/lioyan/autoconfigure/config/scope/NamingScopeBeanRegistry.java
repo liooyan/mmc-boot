@@ -17,12 +17,22 @@ public class NamingScopeBeanRegistry implements ApplicationContextAware {
 
     private Map<Class, Map<String, Object>> scopeBeanRegistry = new HashMap<>();
     private Map<Class, Object> defScopeBeanRegistry = new HashMap<>();
+    private Map<Class, NameReference> nameReferenceMap = new HashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
+    public void addAlias(Class clazz,String name, String alias){
+        NameReference nameReference = nameReferenceMap.computeIfAbsent(clazz, k -> new NameReference());
+        nameReference.addAlias(name,alias);
+    }
+
+    public String[] getAliasGroundName(Class clazz){
+        NameReference nameReference = nameReferenceMap.computeIfAbsent(clazz, k -> new NameReference());
+        return nameReference.getAliasGroundName();
+    }
 
     public void registry(Class clazz, String scopeName, Object bean) {
         Map<String, Object> beanMap = scopeBeanRegistry.computeIfAbsent(clazz, k -> new HashMap<>());
@@ -38,6 +48,8 @@ public class NamingScopeBeanRegistry implements ApplicationContextAware {
         if (scopeName == null) {
             return defScopeBeanRegistry.get(clazz);
         }
+
+        scopeName = nameReferenceMap.get(clazz).getAlias(scopeName);
         Map<String, Object> beanMap = scopeBeanRegistry.computeIfAbsent(clazz, k -> new HashMap<>());
         Object o = beanMap.get(scopeName);
         if (o == null) {

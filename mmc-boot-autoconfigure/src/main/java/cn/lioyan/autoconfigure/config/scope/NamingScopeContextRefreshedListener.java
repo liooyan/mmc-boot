@@ -28,15 +28,12 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
     public static final String ALIAS_KEY = "alias";
 
 
-    public static NameReference nameReference = null;
     public static NamingScopeBeanRegistry namingScopeBeanRegistry = null;
     private ConfigurableApplicationContext applicationContext;
 
     private void init() {
         ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        nameReference = new NameReference();
         namingScopeBeanRegistry = new NamingScopeBeanRegistry();
-        beanFactory.registerSingleton(NameReference.class.getName(), nameReference);
         beanFactory.registerSingleton(NamingScopeBeanRegistry.class.getName(), namingScopeBeanRegistry);
 
     }
@@ -58,13 +55,13 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
             String configBasePath = scopeFactory.getConfigBasePath();
             List<String> scopes = SpringPropertyUtil.getPropertyInAllSource(applicationContext.getEnvironment(), configBasePath + "." + SOURCE_NAME);
             Class configClass = scopeFactory.getConfigClass();
-
+            Class beanClass = scopeFactory.getBeanClass();
             //加载别名
             for (String scope : scopes) {
                 String alias = environment.getProperty(configBasePath + "." + scope + "." + ALIAS_KEY, String.class, scope);
-                nameReference.addAlias(scope, alias);
+                namingScopeBeanRegistry.addAlias(beanClass,scope, alias);
             }
-            String[] aliasGroundName = nameReference.getAliasGroundName();
+            String[] aliasGroundName = namingScopeBeanRegistry.getAliasGroundName(beanClass);
 
 
             // 加载配置
@@ -77,7 +74,7 @@ public class NamingScopeContextRefreshedListener implements ApplicationListener<
                         scopeFactory.registryBeanDefinition(scopeConfig, registry);
                     }
                     if (scopeBean != null) {
-                        namingScopeBeanRegistry.registry(scopeFactory.getBeanClass(), groundName, scopeBean);
+                        namingScopeBeanRegistry.registry(beanClass, groundName, scopeBean);
                     }
                 } catch (NoSuchElementException e) {
                     //没有配置,获取默认配置

@@ -13,13 +13,11 @@ import java.lang.reflect.Method;
 public class NamingScopeBeanBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-    private NameReference nameReference;
     private NamingScopeBeanRegistry namingScopeBeanRegistry;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        this.nameReference =applicationContext.getBean(NameReference.class);
         this.namingScopeBeanRegistry = applicationContext.getBean(NamingScopeBeanRegistry.class);
     }
 
@@ -32,11 +30,6 @@ public class NamingScopeBeanBeanPostProcessor implements BeanPostProcessor, Appl
             if (field.isAnnotationPresent(NamingScopeAutowired.class)) {
                 NamingScopeAutowired configValue = field.getAnnotation(NamingScopeAutowired.class);
                 String scopeName = configValue.value();
-                if (scopeName.isEmpty()) {
-                    scopeName = null;
-                }else {
-                    scopeName = nameReference.getAlias(scopeName);
-                }
                 Object scopeBean = namingScopeBeanRegistry.getBean(field.getType(), scopeName);
                 if(scopeBean != null){
                     field.setAccessible(true);
