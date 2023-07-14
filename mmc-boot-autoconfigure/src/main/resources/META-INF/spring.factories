@@ -11,7 +11,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   cn.lioyan.autoconfigure.config.scope.NamingScopeBeanBeanPostProcessor
 
 
-
 org.springframework.context.ApplicationListener=\
   cn.lioyan.autoconfigure.web.SECApplicationListener,\
   cn.lioyan.autoconfigure.config.scope.NamingScopeContextRefreshedListener
