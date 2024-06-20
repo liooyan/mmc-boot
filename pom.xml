@@ -14,7 +14,6 @@
         <module>mmc-boot-core</module>
         <module>mmc-boot-autoconfigure</module>
         <module>mmc-spring-boot-starter</module>
-        <module>mmc-boot-quart</module>
     </modules>
 
     <properties>
