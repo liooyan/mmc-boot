@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  cn.lioyan.quart.admin.ImportQuartAdmin
-
-
-
